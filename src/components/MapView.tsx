@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import L from "leaflet";
 import { MapContainer, TileLayer, Marker, Polyline, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -80,41 +80,33 @@ const FitBounds = ({ pickup, dropoff }: { pickup: Location | null; dropoff: Loca
 };
 
 export const MapView = ({ pickup, dropoff, onMapClick }: MapViewProps) => {
-  const mapRef = useRef<L.Map | null>(null);
-
   return (
     <div className="relative h-full w-full rounded-lg overflow-hidden shadow-lg">
       <MapContainer
-        center={[12.9716, 77.5946]} // Bengaluru coordinates
+        center={[12.9716, 77.5946]}
         zoom={12}
         className="h-full w-full"
-        ref={mapRef}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        
         <MapEventHandler onMapClick={onMapClick} />
-        
         {pickup && <Marker position={[pickup.lat, pickup.lng]} icon={pickupIcon} />}
         {dropoff && <Marker position={[dropoff.lat, dropoff.lng]} icon={dropoffIcon} />}
-        
         {pickup && dropoff && (
-          <>
-            <Polyline
-              positions={[
-                [pickup.lat, pickup.lng],
-                [dropoff.lat, dropoff.lng],
-              ]}
-              color="#3b82f6"
-              weight={3}
-              opacity={0.7}
-              dashArray="10, 10"
-            />
-            <FitBounds pickup={pickup} dropoff={dropoff} />
-          </>
+          <Polyline
+            positions={[
+              [pickup.lat, pickup.lng],
+              [dropoff.lat, dropoff.lng],
+            ]}
+            color="#3b82f6"
+            weight={3}
+            opacity={0.7}
+            dashArray="10, 10"
+          />
         )}
+        {pickup && dropoff && <FitBounds pickup={pickup} dropoff={dropoff} />}
       </MapContainer>
     </div>
   );
